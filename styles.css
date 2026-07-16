@@ -163,6 +163,33 @@ a { color: var(--green-700); }
   aspect-ratio: 5 / 4;
 }
 
+/* Brand banner */
+.brand-banner {
+  background: var(--green-900);
+  padding: 40px 0;
+}
+
+.brand-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.brand-banner-logo {
+  height: 88px;
+  width: auto;
+}
+
+.brand-banner-text {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.3rem;
+  color: #fff;
+  margin: 0;
+  text-align: center;
+}
+
 /* Section generic */
 .section { padding: 80px 0; }
 
@@ -242,6 +269,19 @@ a { color: var(--green-700); }
 
 .market-card h2 { margin-bottom: 24px; }
 
+.market-map {
+  max-width: 680px;
+  margin: 24px auto 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  aspect-ratio: 16 / 9;
+}
+
+.market-map iframe {
+  display: block;
+}
+
 .market-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -273,9 +313,13 @@ a { color: var(--green-700); }
 }
 
 .market-cta {
-  margin: 0;
+  margin: 0 0 24px;
   font-weight: 500;
   color: var(--green-700);
+}
+
+.market-directions {
+  display: inline-block;
 }
 
 /* Produce */
@@ -421,6 +465,20 @@ a { color: var(--green-700); }
   text-align: center;
 }
 
+.footer-social {
+  margin-top: 6px !important;
+}
+
+.footer-social a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.footer-social a:hover {
+  color: var(--green-700);
+  text-decoration: underline;
+}
+
 /* Responsive */
 @media (max-width: 860px) {
   .hero-inner { grid-template-columns: 1fr; }
@@ -440,6 +498,8 @@ a { color: var(--green-700); }
   .market-card { padding: 32px 24px; }
   .lightbox { padding: 16px; }
   .lightbox-prev, .lightbox-next { width: 36px; height: 36px; font-size: 1rem; }
+  .brand-banner-logo { height: 56px; }
+  .brand-banner-text { font-size: 1.1rem; }
 }
 
 /* Dark mode support */
