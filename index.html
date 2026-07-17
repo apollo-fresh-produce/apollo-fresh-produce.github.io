@@ -153,11 +153,23 @@
     </div>
   </section>
 
+  <section id="follow" class="section follow-section">
+    <div class="wrap follow-card">
+      <img src="images/instagram-qr.png" alt="QR code linking to the Apollo Fresh Produce Instagram profile" class="follow-qr" width="500" height="500">
+      <div class="follow-copy">
+        <h2>Follow along</h2>
+        <p>Scan the code or find us on Instagram for weekly updates on what's fresh at the stall.</p>
+        <a href="https://www.instagram.com/apollo_fresh_produce/" target="_blank" rel="noopener" class="btn btn-primary">@apollo_fresh_produce</a>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
   <div class="wrap footer-inner">
     <p>&copy; <span id="year"></span> Apollo Fresh Produce · Shire Farmers' Market, Sutherland</p>
+    <p class="footer-abn">ABN 43 706 829 378</p>
     <p class="footer-social"><a href="https://www.instagram.com/apollo_fresh_produce/" target="_blank" rel="noopener">@apollo_fresh_produce on Instagram</a></p>
   </div>
 </footer>
@@ -165,7 +177,7 @@
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" aria-label="Close">&times;</button>
   <button class="lightbox-prev" aria-label="Previous image">&#10094;</button>
-  <img class="lightbox-image" id="lightbox-image" src="" alt="">
+  <div class="lightbox-track" id="lightbox-track"></div>
   <button class="lightbox-next" aria-label="Next image">&#10095;</button>
 </div>
 
@@ -174,26 +186,40 @@
 
   const galleryItems = Array.from(document.querySelectorAll('.gallery-item'));
   const lightbox = document.getElementById('lightbox');
-  const lightboxImage = document.getElementById('lightbox-image');
+  const track = document.getElementById('lightbox-track');
   let currentIndex = 0;
+  let scrollEndTimer = null;
+
+  galleryItems.forEach((item) => {
+    const img = item.querySelector('img');
+    const slide = document.createElement('div');
+    slide.className = 'lightbox-slide';
+    const slideImg = document.createElement('img');
+    slideImg.src = img.src;
+    slideImg.alt = img.alt;
+    slideImg.loading = 'lazy';
+    slide.appendChild(slideImg);
+    slide.addEventListener('click', (e) => {
+      if (e.target === slide) closeLightbox();
+    });
+    track.appendChild(slide);
+  });
+
+  const slides = Array.from(track.children);
 
   function openLightbox(index) {
     currentIndex = index;
-    const img = galleryItems[currentIndex].querySelector('img');
-    lightboxImage.src = img.src;
-    lightboxImage.alt = img.alt;
     lightbox.classList.add('open');
+    track.scrollLeft = index * track.clientWidth;
   }
 
   function closeLightbox() {
     lightbox.classList.remove('open');
   }
 
-  function showDelta(delta) {
-    currentIndex = (currentIndex + delta + galleryItems.length) % galleryItems.length;
-    const img = galleryItems[currentIndex].querySelector('img');
-    lightboxImage.src = img.src;
-    lightboxImage.alt = img.alt;
+  function goTo(index, smooth) {
+    currentIndex = (index + slides.length) % slides.length;
+    track.scrollTo({ left: currentIndex * track.clientWidth, behavior: smooth ? 'smooth' : 'instant' });
   }
 
   galleryItems.forEach((item, index) => {
@@ -201,18 +227,31 @@
   });
 
   document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
-  document.querySelector('.lightbox-prev').addEventListener('click', () => showDelta(-1));
-  document.querySelector('.lightbox-next').addEventListener('click', () => showDelta(1));
+  document.querySelector('.lightbox-prev').addEventListener('click', () => goTo(currentIndex - 1, true));
+  document.querySelector('.lightbox-next').addEventListener('click', () => goTo(currentIndex + 1, true));
+
+  track.addEventListener('scroll', () => {
+    clearTimeout(scrollEndTimer);
+    scrollEndTimer = setTimeout(() => {
+      currentIndex = Math.round(track.scrollLeft / track.clientWidth);
+    }, 100);
+  });
 
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLightbox();
   });
 
+  window.addEventListener('resize', () => {
+    if (lightbox.classList.contains('open')) {
+      track.scrollLeft = currentIndex * track.clientWidth;
+    }
+  });
+
   document.addEventListener('keydown', (e) => {
     if (!lightbox.classList.contains('open')) return;
     if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') showDelta(-1);
-    if (e.key === 'ArrowRight') showDelta(1);
+    if (e.key === 'ArrowLeft') goTo(currentIndex - 1, true);
+    if (e.key === 'ArrowRight') goTo(currentIndex + 1, true);
   });
 </script>
 </body>
